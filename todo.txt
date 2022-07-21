@@ -1,11 +1,13 @@
 wall collision gameover
 input joystick
 tail collision gameover
+score
+circle enemy
 
 [done]
 
-score
-circle enemy
+apples
+tail shrinking gameover
 rectangle enemy
 projectile enemy
 line enemy

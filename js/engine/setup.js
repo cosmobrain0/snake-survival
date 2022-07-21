@@ -92,6 +92,7 @@ let main = () => {
 	lastDeltaTime = deltaTime == null ? 1 : deltaTime;
 	deltaTime = currentFrameTime - previousFrameTime;
 	if (!paused) {
+		time += deltaTime;
 		let totalTimeRequired = deltaTime;
 		let previousX = lastDeltaTime%10;
 		if (previousX == 0) previousX = 10;

@@ -25,12 +25,14 @@ draw = () => {
 		lineWidth(3);
 		strokeStyle("#999");
 		moveTo(player.tail[player.tail.length-1]);
-		for (let i=player.tail.length-2; i>=0; i--) {
+		for (let i=player.tail.length-2; i>=Snake.closestToIgnore; i--) {
 			lineTo(player.tail[i]);
 		}
-		lineTo(player.position);
+		// lineTo(player.position);
 		stroke();
 	}
+
+	for (let enemy of enemies) enemy.draw();
 
 	// fillStyle("#fff");
 	// circle(new Vector(20, 20), 20);
