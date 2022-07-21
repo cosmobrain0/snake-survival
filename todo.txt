@@ -1,9 +1,9 @@
 wall collision gameover
+input joystick
+tail collision gameover
 
 [done]
 
-input joystick
-tail collision gameover
 score
 circle enemy
 rectangle enemy

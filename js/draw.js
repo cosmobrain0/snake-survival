@@ -1,9 +1,23 @@
 draw = () => {
 	beginPath();
 	fillStyle(Mouse.leftclick.down ? "#fff" : "#07f");
-	arc(Mouse.position.x, Mouse.position.y, 20, 0, 2*Math.PI);
-	fill();
+	strokeStyle("#0000");
+	circle(Mouse.position, 20);
 
+	if (Mouse.leftclick.down) {
+		circle(Mouse.leftclick.start, 20);
+		let offset = leftDrag();
+		let joystickDeadZone = 10;
+		if (offset.sqrLength() > joystickDeadZone*joystickDeadZone) {
+			player.direction = offset.normalise();
+			let theta = player.direction.theta();
+			strokeStyle("#fff");
+			lineWidth(5);
+			circle(Mouse.leftclick.start, 100, theta/(2*PI)-0.1, theta/(2*PI)+0.1, false, false, true);
+		}
+	}
+
+	strokeStyle("#0000");
 	fillStyle("#999");
 	circle(player.position, 30);
 	if (player.tail.length) {

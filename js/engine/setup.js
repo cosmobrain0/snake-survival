@@ -46,8 +46,8 @@ const Mouse = {
 	selected: null,
 	mouseTouchIdentifier: null,
 };
-let leftDrag = () => Vector.subtract(Mouse.position, Mouse.leftclickstart);
-let rightDrag = () => Vector.subtract(Mouse.position, Mouse.rightclickstart);
+let leftDrag = () => Vector.subtract(Mouse.position, Mouse.leftclick.start);
+let rightDrag = () => Vector.subtract(Mouse.position, Mouse.rightclick.start);
 const UI = new Menu(new Vector(0, 0), null);
 let keymap = {};
 let previousFrameTime, currentFrameTime, lastDeltaTime, deltaTime;
