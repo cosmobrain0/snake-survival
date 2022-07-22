@@ -4,10 +4,10 @@ tail collision gameover
 score
 circle enemy
 apples
+tail shrinking gameover
 
 [done]
 
-tail shrinking gameover
 refactor constants
 rectangle enemy
 projectile enemy

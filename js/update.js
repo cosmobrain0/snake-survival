@@ -14,10 +14,19 @@ let movePlayer = () => {
         player.tail[i] = player.tail[i-1].copy();
     }
     player.tail[0] = player.position.copy();
-    player.position.add(Vector.multiply(player.direction, Snake.speed));
+    player.position.add(Vector.multiply(player.direction, Snake.speed*deltaTime));
+    if (time-player.timeOfLastTailShrink > 100) {
+        player.timeOfLastTailShrink = time;
+        player.tail.splice(player.tail.length-1);
+    }
 }
 
 let checkGameOver = () => {
+    if (player.tail.length <= Snake.closestToIgnore) {
+        paused = true;
+        Rune.gameOver();
+        return;
+    }
     for (let i=player.tail.length-1; i>=Snake.closestToIgnore; i--) {
         if (player.position.to(player.tail[i]).sqrLength() < 20*20) {
             paused = true;

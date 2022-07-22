@@ -1,6 +1,6 @@
 class Snake {
-    static startingLength = 40;
-    static speed = 10;
+    static startingLength = 80;
+    static speed = 0.5;
     static headRadius = 40;
     static closestToIgnore = 4;
     /**
@@ -10,7 +10,8 @@ class Snake {
     constructor(position) {
         this.position = position.copy();
         this.direction = Vector.fromPolar(-PI/180 * 45, 1);
-        this.tail = new Array(Snake.startingLength).fill(0).map((x, i) => Vector.fromPolar(PI/180 * 135, Snake.speed*(i+1)).add(position));
+        this.tail = new Array(Snake.startingLength).fill(0).map((x, i) => Vector.fromPolar(PI/180 * 135, Snake.speed*20*(i+1)).add(position));
+        this.timeOfLastTailShrink = time;
     }
 }
 

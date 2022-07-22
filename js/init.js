@@ -5,11 +5,10 @@ init = () => {
 }
 
 restartGame = () => {
+    time = 0;
     player = new Snake(new Vector(CANVASWIDTH/2, CANVASHEIGHT/2));
     paused = false;
-    // circleEnemy = new CircleEnemy(new Vector(720, 800), 100);
     enemies = [];
-    time = 0;
     timeOfLastEnemySpawn = time;
     apples = new Array(5).fill(0).map(x => newApplePosition());
 }
