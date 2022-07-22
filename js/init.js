@@ -10,5 +10,5 @@ restartGame = () => {
     paused = false;
     enemies = [];
     timeOfLastEnemySpawn = time;
-    apples = new Array(5).fill(0).map(x => newApplePosition());
+    apples = new Array(APPLE_COUNT).fill(0).map(x => newApplePosition());
 }

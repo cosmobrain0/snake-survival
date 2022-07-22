@@ -1,6 +1,3 @@
-let timeOfLastEnemySpawn;
-let timeOfLastAppleSpawn;
-
 calc = () => {
     movePlayer();
     updateEnemies();
@@ -15,7 +12,7 @@ let movePlayer = () => {
     }
     player.tail[0] = player.position.copy();
     player.position.add(Vector.multiply(player.direction, Snake.speed*deltaTime));
-    if (time-player.timeOfLastTailShrink > 100) {
+    if (time-player.timeOfLastTailShrink > TAIL_SHRINK_INTERVAL) {
         player.timeOfLastTailShrink = time;
         player.tail.splice(player.tail.length-1);
     }
@@ -28,7 +25,7 @@ let checkGameOver = () => {
         return;
     }
     for (let i=player.tail.length-1; i>=Snake.closestToIgnore; i--) {
-        if (player.position.to(player.tail[i]).sqrLength() < 20*20) {
+        if (player.position.to(player.tail[i]).sqrLength() < Snake.headRadius*Snake.headRadius) {
             paused = true;
             Rune.gameOver();
             return;
@@ -41,7 +38,7 @@ let checkGameOver = () => {
         }
     }
     for (let enemy of enemies) {
-        if (enemy.active && enemy.sqrDistanceToPoint(player.position) < 20*20) {
+        if (enemy.active && enemy.sqrDistanceToPoint(player.position) < Snake.headRadius*Snake.headRadius) {
             paused = true;
             Rune.gameOver();
             return;
@@ -59,31 +56,31 @@ let updateEnemies = () => {
         if (enemies[i].dead) enemies.splice(i, 1);
     }
 
-    if (time - timeOfLastEnemySpawn > 4000) {
-        enemies.push(new CircleEnemy(Vector.random(CANVASWIDTH, CANVASHEIGHT), randomRange(100, 400)));
+    if (time - timeOfLastEnemySpawn > ENEMY_SPAWN_INTERVAL) {
+        enemies.push(new CircleEnemy(Vector.random(CANVASWIDTH, CANVASHEIGHT), randomRange(CircleEnemy.minRadius, CircleEnemy.maxRadius)));
         timeOfLastEnemySpawn = time;
     }
 }
 
 let calculateScore = () => {
-    score += deltaTime/100;
+    score += deltaTime * TIME_SCORE_MULTIPLIER;
     debug.renderer.text = `${floor(score)}`;
     font(debug.renderer.font);
     let details = ctx.measureText(`${floor(score)}`);
-    debug.renderer.width = details.actualBoundingBoxLeft + details.actualBoundingBoxRight + 40;
+    debug.renderer.width = details.actualBoundingBoxLeft + details.actualBoundingBoxRight + SCORE_BOX_PADDING_X;
 }
 
 let updateApples = () => {
     for (let i=apples.length-1; i>=0; i--) {
-        if (apples[i].to(player.position).sqrLength() < (30+30)*(30+30)) {
+        if (apples[i].to(player.position).sqrLength() < (Snake.headRadius + APPLE_RADIUS)*(Snake.headRadius + APPLE_RADIUS)) {
             let playerTailOffset = player.tail[player.tail.length-2].to(player.tail[player.tail.length-1]);
             let previousPoint = player.tail[player.tail.length-1];
-            for (let j=0; j<10; j++) {
+            for (let j=0; j<APPLE_LENGTH_INCREASE; j++) {
                 let newPoint = Vector.add(previousPoint, playerTailOffset);
                 player.tail.push(Vector.add(previousPoint, playerTailOffset));
                 previousPoint = newPoint.copy();
             }
-            score += 200;
+            score += APPLE_SCORE_INCREASE;
             apples[i] = newApplePosition();
         }
     }

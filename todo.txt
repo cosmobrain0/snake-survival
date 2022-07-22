@@ -5,10 +5,10 @@ score
 circle enemy
 apples
 tail shrinking gameover
+refactor constants
 
 [done]
 
-refactor constants
 rectangle enemy
 projectile enemy
 line enemy

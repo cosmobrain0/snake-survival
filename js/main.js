@@ -1,8 +1,22 @@
+const APPLE_SPAWN_MARGIN = 20;
+const APPLE_COUNT = 5;
+const TAIL_SHRINK_INTERVAL = 100;
+const ENEMY_SPAWN_INTERVAL = 4000;
+const TIME_SCORE_MULTIPLIER = 1/100;
+const SCORE_BOX_PADDING_X = 40;
+const APPLE_RADIUS = 20;
+const APPLE_LENGTH_INCREASE = 10;
+const APPLE_SCORE_INCREASE = 200;
+
+let timeOfLastEnemySpawn;
+let timeOfLastAppleSpawn;
+
 class Snake {
     static startingLength = 80;
     static speed = 0.5;
     static headRadius = 40;
     static closestToIgnore = 4;
+    static headRadius = 20;
     /**
      * 
      * @param {Vector} position the position of the snake's head
@@ -61,8 +75,12 @@ class Enemy {
 }
 
 class CircleEnemy extends Enemy {
+    static lifespan = 10000;
+    static inactiveTime = 3000;
+    static minRadius = 100;
+    static maxRadius = 400;
     constructor(position, radius) {
-        super(10000, 3000);
+        super(CircleEnemy.lifespan, CircleEnemy.inactiveTime);
         this.position = position.copy();
         this.radius = radius;
     }
@@ -103,4 +121,4 @@ let enemies;
  */
 let apples;
 
-let newApplePosition = () => Vector.random(CANVASWIDTH-40, CANVASHEIGHT-40).add(20, 20);
+let newApplePosition = () => Vector.random(CANVASWIDTH-APPLE_SPAWN_MARGIN*2, CANVASHEIGHT-APPLE_SPAWN_MARGIN*2).add(APPLE_SPAWN_MARGIN, APPLE_SPAWN_MARGIN);
