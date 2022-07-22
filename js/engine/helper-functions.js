@@ -136,6 +136,18 @@ let randomRange = (minvalue, maxvalue) => {
 let lerp = (a, b, t) => (b-a)*t + a;
 
 /**
+ * returns `x` linearly mapped from the range `[min1-max1]` to the range `[min2-max2]`
+ * +
+ * @param {Number} x the number to map
+ * @param {Number} min1 the lower bound of the input range
+ * @param {Number} max1 the upper bound of the input range
+ * @param {Number} min2 the lower bound of the target range
+ * @param {Number} max2 the upper bound of the target range
+ * @returns {Number}
+ */
+let map = (x, min1, max1, min2, max2) => (x-min1)/(max1-min1) * (max2-min2) + min2;
+
+/**
  * 
  * @param {Vector} position of the centre of the circle
  * @param {Number} r radius

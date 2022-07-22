@@ -1,5 +1,5 @@
 init = () => {
-    debug = RectangleButton(UI, 40, 40, 100, 50, "#000", "#0000", "DEBUG", "#fff", "50px Arial", []);
+    debug = RectangleButton(UI, 40, 40, 100, 50, "#f00", "#0000", "DEBUG", "#fff", "50px Arial", []);
     restartGame();
     paused = true;
 }
@@ -11,4 +11,5 @@ restartGame = () => {
     enemies = [];
     time = 0;
     timeOfLastEnemySpawn = time;
+    apples = new Array(5).fill(0).map(x => newApplePosition());
 }

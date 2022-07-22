@@ -3,11 +3,12 @@ input joystick
 tail collision gameover
 score
 circle enemy
+apples
 
 [done]
 
-apples
 tail shrinking gameover
+refactor constants
 rectangle enemy
 projectile enemy
 line enemy
@@ -15,6 +16,6 @@ line enemy
 merge updated globals.js and helper-functions.js with js-engine (and decide units for angles?)
 merge updated vector.js with js-engine (and decide units for angles?)
 changes made to engine:
-    helper-functions.js - helper circle function added
+    helper-functions.js - helper circle function added, helper map function added
     globals.js - numerous functions now accept vectors as arguments
     vector.js - added inBounds() and inBoundsUnordered(), as well as JSDoc comments

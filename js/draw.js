@@ -1,10 +1,13 @@
 draw = () => {
-	beginPath();
-	fillStyle(Mouse.leftclick.down ? "#fff" : "#07f");
-	strokeStyle("#0000");
-	circle(Mouse.position, 20);
+	drawEnemies();
+	drawApples();
+	drawPlayerSnake();
+	drawJoystick();
+}
 
+let drawJoystick = () => {
 	if (Mouse.leftclick.down) {
+		fillStyle("#fff");
 		circle(Mouse.leftclick.start, 20);
 		let offset = leftDrag();
 		let joystickDeadZone = 10;
@@ -16,7 +19,9 @@ draw = () => {
 			circle(Mouse.leftclick.start, 100, theta/(2*PI)-0.1, theta/(2*PI)+0.1, false, false, true);
 		}
 	}
+}
 
+let drawPlayerSnake = () => {
 	strokeStyle("#0000");
 	fillStyle("#999");
 	circle(player.position, 30);
@@ -31,9 +36,18 @@ draw = () => {
 		// lineTo(player.position);
 		stroke();
 	}
+}
 
+let drawEnemies = () => {
 	for (let enemy of enemies) enemy.draw();
+}
 
-	// fillStyle("#fff");
-	// circle(new Vector(20, 20), 20);
+let drawApples = () => {
+	fillStyle("#fff");
+	strokeStyle("#fff");
+	lineWidth(3);
+	for (let apple of apples) {
+		circle(apple, 30);
+		circle(apple, map(sin(time/1000), -1, 1, 40, 80), 0, 1, false, false, true);
+	}
 }

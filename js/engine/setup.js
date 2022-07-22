@@ -62,7 +62,7 @@ let time, score;
 let init = () => false;
 let calc = () => false;
 let draw = () => false;
-let getScore = () => score;
+let getScore = () => floor(score);
 let pauseGame = () => paused = true;
 let resumeGame = () => paused = false;
 let restartGame = () => paused = false;

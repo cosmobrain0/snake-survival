@@ -69,7 +69,7 @@ class CircleEnemy extends Enemy {
     draw() {
         strokeStyle("#f00");
         if (!this.active) {
-            fillStyle("#5335");
+            fillStyle("#8669");
             circle(this.position, this.radius, -0.25 - this.life/this.inactiveTime * 0.5, -0.25 + this.life/this.inactiveTime * 0.5);
         } else {
             fillStyle("#f00");
@@ -97,3 +97,9 @@ let debug;
  * @type {Enemy[]}
  */
 let enemies;
+/**
+ * @type {Vector[]}
+ */
+let apples;
+
+let newApplePosition = () => Vector.random(CANVASWIDTH-40, CANVASHEIGHT-40).add(20, 20);

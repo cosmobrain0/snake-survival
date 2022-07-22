@@ -34,6 +34,9 @@ const {
 	min,
 	abs,
 	sqrt,
+	sin,
+	cos,
+	tan
 } = Math;
 
 const TWO_PI = PI*2;
