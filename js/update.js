@@ -7,6 +7,7 @@ calc = () => {
 }
 
 let movePlayer = () => {
+    if (Mouse.leftclick.down) player.direction.rotate(PLAYER_ROTATION_SPEED * deltaTime * (Mouse.leftclick.start.x <= CANVASWIDTH/2 ? -1 : 1));
     for (let i=player.tail.length-1; i>0; i--) {
         player.tail[i] = player.tail[i-1].copy();
     }
@@ -57,7 +58,8 @@ let updateEnemies = () => {
     }
 
     if (time - timeOfLastEnemySpawn > ENEMY_SPAWN_INTERVAL) {
-        enemies.push(new CircleEnemy(Vector.random(CANVASWIDTH, CANVASHEIGHT), randomRange(CircleEnemy.minRadius, CircleEnemy.maxRadius)));
+        let Type = ENEMY_TYPES[floor(randomRange(0, ENEMY_TYPES.length))];
+        enemies.push(new Type(Vector.random(CANVASWIDTH, CANVASHEIGHT)));
         timeOfLastEnemySpawn = time;
     }
 }
@@ -80,6 +82,8 @@ let updateApples = () => {
                 player.tail.push(Vector.add(previousPoint, playerTailOffset));
                 previousPoint = newPoint.copy();
             }
+            timeOfLastAppleEaten = time;
+            timeOfLastAppleSpawn = time;
             score += APPLE_SCORE_INCREASE;
             apples[i] = newApplePosition();
         }

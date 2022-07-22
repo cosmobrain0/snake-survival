@@ -6,16 +6,27 @@ circle enemy
 apples
 tail shrinking gameover
 refactor constants
+rectangle enemy
+animate score
+projectile enemy
 
 [done]
 
-rectangle enemy
-projectile enemy
-line enemy
+line enemy:
+    spawn:
+        wrap numberline around rectangle,
+        use map(random()) to select a point (StartPoint) and note the side the point is on (StartSide)
+        (Direction) is calculated as the angle between (StartPoint) and (arg position)
+        use Direction and StartPoint and bounding lines to calculate the exit point (EndPoint)
+        use (static Speed) and distance(EndPoint - StartPoint) to calculate (lifespan) for (super())
+        (get position()) takes active -- burnout?
+update controls (left/right tapping instead of joystick) [?]
+weighted enemy spawning
+JUICE
 
 merge updated globals.js and helper-functions.js with js-engine (and decide units for angles?)
 merge updated vector.js with js-engine (and decide units for angles?)
 changes made to engine:
     helper-functions.js - helper circle function added, helper map function added
     globals.js - numerous functions now accept vectors as arguments
-    vector.js - added inBounds() and inBoundsUnordered(), as well as JSDoc comments
+    vector.js - added inBounds() and inBoundsUnordered(), as well as JSDoc comments, fixed setPolar()

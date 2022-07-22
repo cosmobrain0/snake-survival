@@ -71,7 +71,8 @@ class Vector {
     setPolar(theta = 0, length = 0) {
         /*this.theta = theta;
         this.length = length;*/
-        this.calculateCartesian(theta, length);
+        this.x = cos(theta)*length;
+        this.y = sin(theta)*length;
         return this;
     }
 

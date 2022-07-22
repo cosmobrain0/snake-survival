@@ -6,9 +6,12 @@ init = () => {
 
 restartGame = () => {
     time = 0;
+    score = 0;
     player = new Snake(new Vector(CANVASWIDTH/2, CANVASHEIGHT/2));
     paused = false;
     enemies = [];
     timeOfLastEnemySpawn = time;
+    timeOfLastAppleSpawn = time;
+    timeOfLastAppleEaten = time;
     apples = new Array(APPLE_COUNT).fill(0).map(x => newApplePosition());
 }

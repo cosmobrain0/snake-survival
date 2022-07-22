@@ -2,7 +2,8 @@ draw = () => {
 	drawEnemies();
 	drawApples();
 	drawPlayerSnake();
-	drawJoystick();
+	drawTouchControls();
+	drawScore();
 }
 
 let drawJoystick = () => {
@@ -18,6 +19,17 @@ let drawJoystick = () => {
 			lineWidth(5);
 			circle(Mouse.leftclick.start, 100, theta/(2*PI)-0.1, theta/(2*PI)+0.1, false, false, true);
 		}
+	}
+}
+
+let drawTouchControls = () => {
+	if (Mouse.leftclick.down) {
+		let colour = Mouse.leftclick.start.x <= CANVASWIDTH/2 ? "#07f" : "#f40";
+		fillStyle(colour);
+		circle(Mouse.leftclick.start, 30);
+		lineWidth(map(time%300, 0, 300, 1, 0.3) * 7);
+		strokeStyle(colour);
+		circle(Mouse.leftclick.start, map(time%300, 0, 300, 25, 80), 0, 1, false, false, true);
 	}
 }
 
@@ -47,7 +59,11 @@ let drawApples = () => {
 	strokeStyle("#fff");
 	lineWidth(3);
 	for (let apple of apples) {
-		circle(apple, 30);
-		circle(apple, map(sin(time/1000), -1, 1, 40, 80), 0, 1, false, false, true);
+		circle(apple, APPLE_RADIUS);
 	}
+}
+
+let drawScore = () => {
+	let v = 1 - clamp((time-timeOfLastAppleEaten)/500, 0, 1);
+	debug.renderer.bgcolour = `rgb(${0 * v}, ${119 * v}, ${255 * v})`;
 }
