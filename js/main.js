@@ -150,7 +150,6 @@ class LineEnemy extends Enemy {
     static inactiveTime = 5000;
     constructor(position) {
         super(RectangleEnemy.lifespan, RectangleEnemy.inactiveTime);
-        this.debugPosition = position.copy();
         let value = randomRange(0, 2*CANVASWIDTH + 2*CANVASHEIGHT);
         this.a = new Vector();
         let invalidSide = -1;
@@ -228,7 +227,6 @@ class ProjectileEnemy extends Enemy {
     static radius = 70;
     constructor(position) {
         super(RectangleEnemy.lifespan, RectangleEnemy.inactiveTime);
-        this.debugPosition = position.copy();
         let value = randomRange(0, 2*CANVASWIDTH + 2*CANVASHEIGHT);
         this.a = new Vector();
         let invalidSide = -1;
@@ -315,4 +313,4 @@ let apples;
 
 let newApplePosition = () => Vector.random(CANVASWIDTH-APPLE_SPAWN_MARGIN*2, CANVASHEIGHT-APPLE_SPAWN_MARGIN*2).add(APPLE_SPAWN_MARGIN, APPLE_SPAWN_MARGIN);
 
-const ENEMY_TYPES = [LineEnemy, ProjectileEnemy];
+const ENEMY_TYPES = [CircleEnemy, RectangleEnemy, LineEnemy, ProjectileEnemy];
