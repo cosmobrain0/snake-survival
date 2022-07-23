@@ -32,7 +32,7 @@ let checkGameOver = () => {
             return;
         }
         for (let enemy of enemies) {
-            if (enemy.active && enemy.sqrDistanceToPoint(player.tail[i]) <= 0) {
+            if (enemy.active && enemy.sqrDistanceToPoint(player.tail[i]) <= 5*5) {
                 player.tail.splice(i);
                 break;
             }

@@ -8,20 +8,13 @@ tail shrinking gameover
 refactor constants
 rectangle enemy
 animate score
+update controls (left/right tapping instead of joystick) [reconsider?]
+line enemy
 projectile enemy
+weighted enemy spawning [removed]
 
 [done]
 
-line enemy:
-    spawn:
-        wrap numberline around rectangle,
-        use map(random()) to select a point (StartPoint) and note the side the point is on (StartSide)
-        (Direction) is calculated as the angle between (StartPoint) and (arg position)
-        use Direction and StartPoint and bounding lines to calculate the exit point (EndPoint)
-        use (static Speed) and distance(EndPoint - StartPoint) to calculate (lifespan) for (super())
-        (get position()) takes active -- burnout?
-update controls (left/right tapping instead of joystick) [?]
-weighted enemy spawning
 JUICE
 
 merge updated globals.js and helper-functions.js with js-engine (and decide units for angles?)
