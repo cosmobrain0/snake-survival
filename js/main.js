@@ -1,17 +1,26 @@
-const APPLE_SPAWN_MARGIN = 20;
-const APPLE_COUNT = 5;
+const PLAYER_ROTATION_SPEED = 0.3 * PI/180;
 const TAIL_SHRINK_INTERVAL = 150;
-const ENEMY_SPAWN_INTERVAL = 4000;
+const ENEMY_BASE_SPAWN_INTERVAL = 4000;
 const TIME_SCORE_MULTIPLIER = 1/100;
 const SCORE_BOX_PADDING_X = 40;
+const APPLE_SPAWN_MARGIN = 50;
+const APPLE_COUNT = 5;
 const APPLE_RADIUS = 40;
 const APPLE_LENGTH_INCREASE = 10;
 const APPLE_SCORE_INCREASE = 200;
-const PLAYER_ROTATION_SPEED = 0.3 * PI/180;
+const APPLE_COMBO_MAX_TIME = 1200;
+const APPLE_COMBO_SCORE_MULTIPLIER = 1.5;
+const APPLE_COMBO_LENGTH_INCREASE_MULTIPLIER = 1.3;
+const COMBO_UI_COLOUR = [0, 119, 255];
+const COMBO_UI_SECONDARY_COLOUR = [0, 255, 170];
 
 let timeOfLastEnemySpawn;
 let timeOfLastAppleSpawn;
 let timeOfLastAppleEaten;
+let appleComboChain;
+let enemySpawnInterval;
+
+let colourToString = (colour, alpha) => `rgba(${colour[0]}, ${colour[1]}, ${colour[2]}, ${typeof alpha == 'number' ? alpha : 1})`;
 
 class Snake {
     static startingLength = 80;
@@ -148,6 +157,7 @@ class RectangleEnemy extends Enemy {
 class LineEnemy extends Enemy {
     static lifespan = 20000;
     static inactiveTime = 5000;
+    static portionCovered = 0.6;
     constructor(position) {
         super(RectangleEnemy.lifespan, RectangleEnemy.inactiveTime);
         let value = randomRange(0, 2*CANVASWIDTH + 2*CANVASHEIGHT);
@@ -183,12 +193,18 @@ class LineEnemy extends Enemy {
         }
         collisions.sort((a, b) => this.a.to(a).sqrLength() - this.a.to(b).sqrLength());
         this.b = collisions[0].copy();
+        this.b = this.a.to(this.b).multiply(LineEnemy.portionCovered).add(this.a);
     }
 
     draw() {
         lineWidth(10);
         if (!this.active) {
             let offset = this.a.to(this.b).multiply(this.life/this.inactiveTime);
+            strokeStyle("#5559");
+            beginPath();
+            moveTo(this.a);
+            lineTo(this.b);
+            stroke();
             strokeStyle("#8669");
             beginPath();
             moveTo(this.a);
@@ -215,7 +231,7 @@ class LineEnemy extends Enemy {
         let m2 = -1/m1;
         let c2 = point.y - m2*point.x;
 
-        let x = (c1-c2)/(m2-m1);
+        let x = clampUnordered((c1-c2)/(m2-m1), this.a.x, this.b.x);
         let y = m1*x + c1;
         return point.sqrDistanceTo(new Vector(x, y));
     }

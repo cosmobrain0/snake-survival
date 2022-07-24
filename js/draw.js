@@ -24,7 +24,7 @@ let drawJoystick = () => {
 
 let drawTouchControls = () => {
 	if (Mouse.leftclick.down) {
-		let colour = Mouse.leftclick.start.x <= CANVASWIDTH/2 ? "#07f" : "#f40";
+		let colour = "#555";
 		fillStyle(colour);
 		circle(Mouse.leftclick.start, 30);
 		lineWidth(map(time%300, 0, 300, 1, 0.3) * 7);
@@ -51,6 +51,9 @@ let drawPlayerSnake = () => {
 }
 
 let drawEnemies = () => {
+	strokeStyle("#f00");
+	lineWidth(10);
+	strokeRect(5, 5, CANVASWIDTH-10, CANVASHEIGHT-10)
 	for (let enemy of enemies) enemy.draw();
 }
 
@@ -64,6 +67,14 @@ let drawApples = () => {
 }
 
 let drawScore = () => {
-	let v = 1 - clamp((time-timeOfLastAppleEaten)/500, 0, 1);
-	debug.renderer.bgcolour = `rgb(${0 * v}, ${119 * v}, ${255 * v})`;
+	for (let i=scoreMenu.buttons.length-1; i>=0; i--) {
+		let alpha = scoreMenu.buttons[i].renderer.bgcolour.split(",")[3];
+		alpha = alpha.slice(1, alpha.length-1);
+		alpha = max(parseFloat(alpha) - 0.05, 0);
+		scoreMenu.buttons[i].renderer.bgcolour = colourToString(COMBO_UI_SECONDARY_COLOUR, alpha);
+		if (alpha == 0) scoreMenu.buttons.splice(i, 1);
+	}
+
+	let v = 1 - clamp((time-timeOfLastAppleEaten)/APPLE_COMBO_MAX_TIME, 0, 1);
+	debug.renderer.bgcolour = colourToString(COMBO_UI_COLOUR.map(x => x*v));
 }

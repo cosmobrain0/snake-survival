@@ -1,3 +1,4 @@
+[main features]
 wall collision gameover
 input joystick
 tail collision gameover
@@ -13,10 +14,19 @@ line enemy
 projectile enemy
 weighted enemy spawning [removed]
 
-[done]
+    [done]
 
 JUICE
 
+[playtester feedback]
+border around canvas
+LineEnemy shouldn't completely block everything
+combo system
+
+    [done]
+
+
+[engine updates]
 merge updated globals.js and helper-functions.js with js-engine (and decide units for angles?)
 merge updated vector.js with js-engine (and decide units for angles?)
 changes made to engine:
