@@ -6,6 +6,7 @@ draw = () => {
 	drawPlayerSnake();
 	drawTouchControls();
 	drawScore();
+	drawParticles();
 }
 
 let drawTouchControls = () => {
@@ -113,4 +114,8 @@ let drawSnakeHead = () => {
 		0, 0, 2*Snake.headRadius*imageSizeMultiplier, Snake.headRadius*imageSizeMultiplier
 	)
 	restore();
+}
+
+let drawParticles = () => {
+	for (let particle of PARTICLES) particle.draw();
 }

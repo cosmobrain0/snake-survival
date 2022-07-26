@@ -57,4 +57,5 @@ restartGame = () => {
     appleComboChain = 0;
     enemySpawnInterval = ENEMY_BASE_SPAWN_INTERVAL;
     scoreMenu.buttons = [];
+    PARTICLES.splice(0, PARTICLES.length);
 }

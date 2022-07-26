@@ -162,3 +162,18 @@ let circle = (position, r, startAngle=0, endAngle=1, counterClockwise=false, sho
     if (shouldFill) fill();
     if (shouldStroke) stroke();
 }
+
+let randomPointInRectangle = (x, y, width, height) => {
+    let value = random()*(2*width + 2*height);
+    if (value < width) {
+        return new Vector(x+value, y);
+    }
+    if (value < 2*width) {
+        return new Vector(x+value - width, y+height);
+    }
+    value -= 2*width;
+    if (value < height) {
+        return new Vector(x, y+value);
+    }
+    return new Vector(x, y+value - width);
+}

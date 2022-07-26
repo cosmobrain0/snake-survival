@@ -83,6 +83,10 @@ class Enemy {
     draw() {
         // nothing
     }
+
+    spawnParticles() {
+        // nothing
+    }
 }
 
 class CircleEnemy extends Enemy {
@@ -98,7 +102,7 @@ class CircleEnemy extends Enemy {
         this.position = position.copy();
         this.radius = randomRange(CircleEnemy.minRadius, CircleEnemy.maxRadius);
         let meanRadius = (CircleEnemy.circleMinRadius + CircleEnemy.circleMaxRadius)/2;
-        let numberOfRandomCircles = floor(1*CircleEnemy.randomCircleMultiplier*this.radius*this.radius / (meanRadius*meanRadius));
+        let numberOfRandomCircles = floor(0*CircleEnemy.randomCircleMultiplier*this.radius*this.radius / (meanRadius*meanRadius));
         this.circlePositions = new Array(numberOfRandomCircles).fill(0).map(x => 
             Vector.fromPolar(randomRange(0, 2*PI), randomRange(0, this.radius-CircleEnemy.circleMaxRadius)).add(this.position)
         );
@@ -130,6 +134,15 @@ class CircleEnemy extends Enemy {
         let l = max(0, point.distanceTo(this.position)-this.radius);
         return l*l;
     }
+
+    spawnParticles() {
+        let randomDirection = Vector.fromPolar(this.active ? randomRange(0, 2*PI) : randomRange(-0.25 - this.life/this.inactiveTime * 0.5, -0.25 + this.life/this.inactiveTime * 0.5)*2*PI, this.radius);
+        PARTICLES.push(new Particle(
+            Vector.add(randomDirection, this.position),
+            randomDirection.copy().normalise().multiply(0.1),
+            1000, 15, this.active ? "#f00" : "#8669"
+        ));
+    }
 }
 
 class RectangleEnemy extends Enemy {
@@ -145,7 +158,7 @@ class RectangleEnemy extends Enemy {
         this.position = position.copy();
         this.size = Vector.random(RectangleEnemy.maxSize-RectangleEnemy.minSize, RectangleEnemy.maxSize-RectangleEnemy.minSize).add(RectangleEnemy.minSize, RectangleEnemy.minSize);
         let meanRadius = (RectangleEnemy.circleMinRadius + RectangleEnemy.circleMaxRadius)/2;
-        let numberOfRandomCircles = floor(1*RectangleEnemy.randomCircleMultiplier*this.size.x*this.size.y / (PI*meanRadius*meanRadius));
+        let numberOfRandomCircles = floor(0*RectangleEnemy.randomCircleMultiplier*this.size.x*this.size.y / (PI*meanRadius*meanRadius));
         this.circlePositions = new Array(numberOfRandomCircles).fill(0).map(x => 
             Vector.random(this.size.x-RectangleEnemy.circleMaxRadius*2, this.size.y-RectangleEnemy.circleMaxRadius*2)
                 .add(this.position.x+RectangleEnemy.circleMaxRadius, this.position.y+RectangleEnemy.circleMaxRadius)
@@ -181,6 +194,24 @@ class RectangleEnemy extends Enemy {
     sqrDistanceToPoint(point) {
         let closestPoint = new Vector(clamp(point.x, this.position.x-this.size.x/2, this.position.x+this.size.x/2), clamp(point.y, this.position.y-this.size.y/2, this.position.y+this.size.y/2));
         return point.sqrDistanceTo(closestPoint);
+    }
+
+    spawnParticles() {
+        // TOOD: complete
+        if (!this.active) {
+            fillStyle("#8669");
+            let width = this.size.x * this.life/this.inactiveTime;
+            let height = this.size.y * this.life/this.inactiveTime;
+            PARTICLES.push(new Particle(
+                randomPointInRectangle(this.position.x-width/2, this.position.y-height/2, width, height),
+                Vector.fromPolar(randomRange(0, 2*PI), 0.1), 1000, 15, "#8669"
+            ));
+        } else {
+            PARTICLES.push(new Particle(
+                randomPointInRectangle(this.position.x-this.size.x/2, this.position.y-this.size.y/2, this.size.x, this.size.y),
+                Vector.fromPolar(randomRange(0, 2*PI), 0.1), 1000, 15, "#f00"
+            ));
+        }
     }
 }
 
@@ -265,6 +296,22 @@ class LineEnemy extends Enemy {
         let y = m1*x + c1;
         return point.sqrDistanceTo(new Vector(x, y));
     }
+
+    spawnParticles() {
+        // TOOD: complete
+        if (!this.active) {
+            let b = Vector.add(this.a, this.a.to(this.b).multiply(this.life/this.inactiveTime));
+            PARTICLES.push(new Particle(
+                Vector.lerp(this.a, b, random()),
+                this.a.to(this.b).normalise().rotate(random() < 0.5 ? -PI/2 : PI/2).multiply(0.1), 1000, 15, "#8669"
+            ));
+        } else {
+            PARTICLES.push(new Particle(
+                Vector.lerp(this.a, this.b, random()),
+                this.a.to(this.b).normalise().rotate(random() < 0.5 ? -PI/2 : PI/2).multiply(0.1), 1000, 15, "#f00"
+            ));
+        }
+    }
 }
 
 class ProjectileEnemy extends Enemy {
@@ -312,7 +359,7 @@ class ProjectileEnemy extends Enemy {
         this.lifespan = ProjectileEnemy.inactiveTime + ProjectileEnemy.lifespanPerUnit*this.a.to(this.b).length();
 
         let meanRadius = (ProjectileEnemy.circleMinRadius + ProjectileEnemy.circleMaxRadius)/2;
-        let numberOfRandomCircles = floor(1*ProjectileEnemy.randomCircleMultiplier*ProjectileEnemy.radius*ProjectileEnemy.radius / (meanRadius*meanRadius));
+        let numberOfRandomCircles = floor(0*ProjectileEnemy.randomCircleMultiplier*ProjectileEnemy.radius*ProjectileEnemy.radius / (meanRadius*meanRadius));
         this.circlePositions = new Array(numberOfRandomCircles).fill(0).map(x => 
             Vector.fromPolar(randomRange(0, 2*PI), randomRange(0, ProjectileEnemy.radius-ProjectileEnemy.circleMaxRadius))
         );
@@ -356,6 +403,20 @@ class ProjectileEnemy extends Enemy {
     sqrDistanceToPoint(point) {
         return max(point.sqrDistanceTo(this.currentPosition(null)) - ProjectileEnemy.radius*ProjectileEnemy.radius, 0);
     }
+
+    spawnParticles() {
+        // TOOD: complete
+        let particleDirection = this.b.to(this.a).normalise().multiply(0.1);
+        let position = particleDirection.copy().rotate(random() < 0.5 ? PI/2 : -PI/2).normalise();
+        position.subtract(Vector.multiply(position, 0.5));
+        position.multiply(ProjectileEnemy.radius*2*random());
+        position.add(this.currentPosition(this.active ? null : this.life/this.inactiveTime));
+        PARTICLES.push(
+            new Particle(
+                position, particleDirection, 1000, 15, this.active ? "#f00" : "#8669"
+            )
+        );
+    }
 }
 
 /**
@@ -374,5 +435,39 @@ let apples;
 
 let newApplePosition = () => Vector.random(CANVASWIDTH-APPLE_SPAWN_MARGIN*2, CANVASHEIGHT-APPLE_SPAWN_MARGIN*2).add(APPLE_SPAWN_MARGIN, APPLE_SPAWN_MARGIN);
 
-// const ENEMY_TYPES = [CircleEnemy, RectangleEnemy, LineEnemy, ProjectileEnemy];
-const ENEMY_TYPES = [ProjectileEnemy];
+const ENEMY_TYPES = [CircleEnemy, RectangleEnemy, LineEnemy, ProjectileEnemy];
+// const ENEMY_TYPES = [ProjectileEnemy];
+
+class Particle {
+    /**
+     * 
+     * @param {Vector} position 
+     * @param {Vector} direction 
+     * @param {Number} lifespan 
+     * @param {Number} size
+     * @param {String} colour 
+     */
+    constructor(position, direction, lifespan, size, colour) {
+        this.startPosition = position.copy();
+        this.direction = direction.copy();
+        this.lifespan = lifespan;
+        this.size = size;
+        this.colour = colour;
+        this.timeOfSpawn = time;
+    }
+
+    get life() { return time-this.timeOfSpawn; }
+    get dead() { return this.life >= this.lifespan; }
+    get position() { return Vector.add(this.startPosition, Vector.multiply(this.direction, this.life)); }
+    get radius() { return map(this.life, 0, this.lifespan, this.size, 0); }
+
+    draw() {
+        fillStyle(this.colour);
+        circle(this.position, this.radius, 0, 1, false, true, false);
+    }
+}
+
+/**
+ * @type {Particle[]}
+ */
+const PARTICLES = [];
