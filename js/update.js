@@ -8,8 +8,8 @@ calc = () => {
 }
 
 let movePlayer = () => {
-    if (keymap['a'] || Mouse.touches.filter(x => x.down && x.start.x <= CANVASWIDTH/2).length) player.direction.rotate(-PLAYER_ROTATION_SPEED * deltaTime);
-    if (keymap['d'] || Mouse.touches.filter(x => x.down && x.start.x >= CANVASWIDTH/2).length) player.direction.rotate( PLAYER_ROTATION_SPEED * deltaTime);
+    if (keymap['a'] || (Mouse.leftclick.down && Mouse.leftclick.start.x <= CANVASWIDTH/2) || Mouse.touches.filter(x => x.down && x.start.x <= CANVASWIDTH/2).length) player.direction.rotate(-PLAYER_ROTATION_SPEED * deltaTime);
+    if (keymap['d'] || (Mouse.leftclick.down && Mouse.leftclick.start.x > CANVASWIDTH/2) || Mouse.touches.filter(x => x.down && x.start.x > CANVASWIDTH/2).length) player.direction.rotate( PLAYER_ROTATION_SPEED * deltaTime);
     for (let i=player.tail.length-1; i>0; i--) {
         player.tail[i] = player.tail[i-1].copy();
     }
