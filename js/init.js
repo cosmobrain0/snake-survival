@@ -27,7 +27,6 @@ init = () => {
             img.src = RESOURCE_DIRS[i];
             img.onload = () => {
                 RESOURCE_LOAD_STATES[i] = true;
-                console.log("hey");
             }
 
             RESOURCES.push(img);

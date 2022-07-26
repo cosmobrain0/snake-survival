@@ -97,7 +97,7 @@ class CircleEnemy extends Enemy {
         super(CircleEnemy.lifespan, CircleEnemy.inactiveTime);
         this.position = position.copy();
         this.radius = randomRange(CircleEnemy.minRadius, CircleEnemy.maxRadius);
-        let meanRadius = (RectangleEnemy.circleMinRadius + RectangleEnemy.circleMaxRadius)/2;
+        let meanRadius = (CircleEnemy.circleMinRadius + CircleEnemy.circleMaxRadius)/2;
         let numberOfRandomCircles = floor(1*CircleEnemy.randomCircleMultiplier*this.radius*this.radius / (meanRadius*meanRadius));
         this.circlePositions = new Array(numberOfRandomCircles).fill(0).map(x => 
             Vector.fromPolar(randomRange(0, 2*PI), randomRange(0, this.radius-CircleEnemy.circleMaxRadius)).add(this.position)
@@ -271,8 +271,11 @@ class ProjectileEnemy extends Enemy {
     static lifespanPerUnit = 13.9;
     static inactiveTime = 3000;
     static radius = 70;
+    static randomCircleMultiplier = 0.05;
+    static circleMinRadius = 4;
+    static circleMaxRadius = 10;
     constructor(position) {
-        super(RectangleEnemy.lifespan, RectangleEnemy.inactiveTime);
+        super(ProjectileEnemy.lifespan, ProjectileEnemy.inactiveTime);
         let value = randomRange(0, 2*CANVASWIDTH + 2*CANVASHEIGHT);
         this.a = new Vector();
         let invalidSide = -1;
@@ -307,6 +310,13 @@ class ProjectileEnemy extends Enemy {
         collisions.sort((a, b) => this.a.to(a).sqrLength() - this.a.to(b).sqrLength());
         this.b = collisions[0].copy();
         this.lifespan = ProjectileEnemy.inactiveTime + ProjectileEnemy.lifespanPerUnit*this.a.to(this.b).length();
+
+        let meanRadius = (ProjectileEnemy.circleMinRadius + ProjectileEnemy.circleMaxRadius)/2;
+        let numberOfRandomCircles = floor(1*ProjectileEnemy.randomCircleMultiplier*ProjectileEnemy.radius*ProjectileEnemy.radius / (meanRadius*meanRadius));
+        this.circlePositions = new Array(numberOfRandomCircles).fill(0).map(x => 
+            Vector.fromPolar(randomRange(0, 2*PI), randomRange(0, ProjectileEnemy.radius-ProjectileEnemy.circleMaxRadius))
+        );
+        this.circleRadii = new Array(numberOfRandomCircles).fill(0).map(x => randomRange(ProjectileEnemy.circleMinRadius, ProjectileEnemy.circleMaxRadius));
     }
 
     currentPosition = (t) => {
@@ -330,6 +340,11 @@ class ProjectileEnemy extends Enemy {
             lineWidth(5);
             let theta = this.a.to(this.b).theta()/(2*PI);
             circle(position, ProjectileEnemy.radius*1.4, theta-0.2, theta+0.2, false, false, true);
+            fillStyle("#800");
+            strokeStyle("#400");
+            for (let i in this.circlePositions) {
+                circle(Vector.add(position, this.circlePositions[i]), this.circleRadii[i]);
+            }
         }
     }
 
@@ -360,4 +375,4 @@ let apples;
 let newApplePosition = () => Vector.random(CANVASWIDTH-APPLE_SPAWN_MARGIN*2, CANVASHEIGHT-APPLE_SPAWN_MARGIN*2).add(APPLE_SPAWN_MARGIN, APPLE_SPAWN_MARGIN);
 
 // const ENEMY_TYPES = [CircleEnemy, RectangleEnemy, LineEnemy, ProjectileEnemy];
-const ENEMY_TYPES = [CircleEnemy, RectangleEnemy];
+const ENEMY_TYPES = [ProjectileEnemy];
