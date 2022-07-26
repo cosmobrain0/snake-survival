@@ -6,37 +6,21 @@ draw = () => {
 	drawScore();
 }
 
-let drawJoystick = () => {
-	if (Mouse.leftclick.down) {
-		fillStyle("#fff");
-		circle(Mouse.leftclick.start, 20);
-		let offset = leftDrag();
-		let joystickDeadZone = 10;
-		if (offset.sqrLength() > joystickDeadZone*joystickDeadZone) {
-			player.direction = offset.normalise();
-			let theta = player.direction.theta();
-			strokeStyle("#fff");
-			lineWidth(5);
-			circle(Mouse.leftclick.start, 100, theta/(2*PI)-0.1, theta/(2*PI)+0.1, false, false, true);
-		}
-	}
-}
-
 let drawTouchControls = () => {
-	if (Mouse.leftclick.down) {
+	Mouse.touches.filter(x => x.down).forEach(x =>  {
 		let colour = "#555";
 		fillStyle(colour);
-		circle(Mouse.leftclick.start, 30);
+		circle(x.start, 30);
 		lineWidth(map(time%300, 0, 300, 1, 0.3) * 7);
 		strokeStyle(colour);
-		circle(Mouse.leftclick.start, map(time%300, 0, 300, 25, 80), 0, 1, false, false, true);
-	}
+		circle(x.start, map(time%300, 0, 300, 25, 80), 0, 1, false, false, true);
+	})
 }
 
 let drawPlayerSnake = () => {
 	strokeStyle("#0000");
 	fillStyle("#999");
-	circle(player.position, 30);
+	// circle(player.position, 30);
 	if (player.tail.length) {
 		beginPath();
 		lineWidth(3);
@@ -45,9 +29,16 @@ let drawPlayerSnake = () => {
 		for (let i=player.tail.length-2; i>=Snake.closestToIgnore; i--) {
 			lineTo(player.tail[i]);
 		}
-		// lineTo(player.position);
 		stroke();
+		for (let i=0; i<player.tail.length-1; i+=4) {
+			// lineTo(player.tail[i]);
+			// console.log(i, player.tail.length);
+			drawSnakeSkeleton(player.tail[i], Vector.add(
+				player.tail[i], Vector.subtract(player.tail[i+1], player.tail[i]).multiply(4)
+			));
+		}
 	}
+	drawSnakeHead();
 }
 
 let drawEnemies = () => {
@@ -76,5 +67,43 @@ let drawScore = () => {
 	}
 
 	let v = 1 - clamp((time-timeOfLastAppleEaten)/APPLE_COMBO_MAX_TIME, 0, 1);
-	debug.renderer.bgcolour = colourToString(COMBO_UI_COLOUR.map(x => x*v));
+	debug.renderer.bgcolour = colourToString(COMBO_UI_SECONDARY_COLOUR.map(x => x*v));
+}
+
+/**
+ * 
+ * @param {Vector} p1 
+ * @param {Vector} p2 
+ */
+let drawSnakeSkeleton = (p1, p2) => {
+	let size = p1.to(p2).length();
+	save();
+	translate(p1);
+	rotate(p1.to(p2).theta()/(2*PI));
+	translate(new Vector(0, -size/2));
+	ctx.drawImage(RESOURCES[0], 0, 0, RESOURCES[0].width, RESOURCES[0].height, 0, 0, size, size);
+	restore();
+}
+
+let drawSnakeHead = () => {
+	let angle = clamp(map(apples.reduce((acc, val) => min(acc, player.position.to(val).length()), Infinity), 0, 200, 0.15, 0), 0, 0.15);
+	save();
+	translate(Vector.subtract(player.position, new Vector(Snake.headRadius, 0)));
+	rotate(player.direction.theta()/(2*PI));
+	let imageSizeMultiplier = 1;
+	// save();
+	rotate(-angle);
+	drawImage(
+		RESOURCES[1], // top of player head
+		0, 0, RESOURCES[1].width, RESOURCES[1].height,
+		0, -Snake.headRadius*2*imageSizeMultiplier, 2*Snake.headRadius*imageSizeMultiplier, 2*Snake.headRadius*imageSizeMultiplier
+	);
+	// restore();
+	rotate(angle*2);
+	drawImage(
+		RESOURCES[2], // bottom of player head
+		0, 0, RESOURCES[2].width, RESOURCES[2].height,
+		0, 0, 2*Snake.headRadius*imageSizeMultiplier, Snake.headRadius*imageSizeMultiplier
+	)
+	restore();
 }

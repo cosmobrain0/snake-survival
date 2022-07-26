@@ -19,6 +19,7 @@ ctx.imageSmoothingEnabled = false;
  * @property {boolean} down true while this button is pressed
  * @property {Vector} start the position of the mouse the last time it was pressed
  * @property {Vector[]} path the path the mouse took the last time this button was held down
+ * @property {Number?} identifier the identifier for touch input
  */
 /**
  * @typedef {Object} Mouse
@@ -26,7 +27,7 @@ ctx.imageSmoothingEnabled = false;
  * @property {MouseButton} leftclick information about the mouse left click button
  * @property {MouseButton} rightclick information about the mouse right click button
  * @property {Menu} selected the current selected menu
- * @property {Number} mouseTouchIdentifier for touchscreens
+ * @property {MouseButton[]} touches
  */
 /**
  * @type {Mouse}
@@ -44,7 +45,7 @@ const Mouse = {
 		path: [],
 	},
 	selected: null,
-	mouseTouchIdentifier: null,
+	touches: []
 };
 let leftDrag = () => Vector.subtract(Mouse.position, Mouse.leftclick.start);
 let rightDrag = () => Vector.subtract(Mouse.position, Mouse.rightclick.start);
@@ -90,7 +91,8 @@ window.onload = () => {
 let main = () => {
 	currentFrameTime = Date.now();
 	lastDeltaTime = deltaTime == null ? 1 : deltaTime;
-	deltaTime = currentFrameTime - previousFrameTime;
+	// deltaTime = currentFrameTime - previousFrameTime;
+	deltaTime = min(currentFrameTime - previousFrameTime, 1000/60); // fix this
 	if (!paused) {
 		time += deltaTime;
 		let totalTimeRequired = deltaTime;
@@ -165,39 +167,48 @@ onwheel = e => {
 }
 
 ontouchstart = e => {
-	if (e.touches.length) {
-		if (Mouse.mouseTouchIdentifier == null) {
-			Mouse.position = adjustMousePosition(e.touches[0].clientX, e.touches[0].clientY);
-			Mouse.leftclick.down = true;
-			Mouse.leftclick.start = Mouse.position.copy();
-			Mouse.leftclick.path = [Mouse.position.copy()];
-			Mouse.mouseTouchIdentifier = e.touches[0].identifier;
-			Mouse.selected = null;
+	for (let i=0; i<e.touches.length; i++) {
+		/**
+		 * @type {MouseButton}
+		 */
+		let touch = {};
+		touch.down = true;
+		touch.start = adjustMousePosition(e.touches[i].clientX, e.touches[i].clientY);
+		touch.path = [touch.start.copy()];
+		touch.identifier = e.touches[i].identifier;
+		let previousTouch = Mouse.touches.filter(x => x.identifier == touch.identifier);
+		if (previousTouch[0]) {
+			Mouse.touches[Mouse.touches.indexOf(previousTouch[0])] = touch;
+		} else {
+			Mouse.touches.push(touch);
 		}
 	}
 }
 ontouchmove = e => {
 	for (let i=0; i < e.changedTouches.length; i++) {
-		if (e.changedTouches[i].identifier == Mouse.mouseTouchIdentifier) {
-			Mouse.position = adjustMousePosition(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
-			Mouse.leftclick.path.push(Mouse.position.copy());
-			break;
-		}
+		Mouse.touches.forEach(x => {
+			if (e.changedTouches[i].identifier == x.identifier) {
+				let pos = adjustMousePosition(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+				x.path.push(pos.copy());
+			}
+		})
 	}
 }
 ontouchcancel = e => {
 	for (let i=0; i<e.changedTouches.length; i++) {
-		if (e.changedTouches[i].identifier == Mouse.mouseTouchIdentifier) {
-			Mouse.leftclick.down = false;
-			Mouse.mouseTouchIdentifier = null;
+		for (let j=Mouse.touches.length-1; j>=0; j--) {
+			if (e.changedTouches[i].identifier == Mouse.touches[j].identifier) {
+				Mouse.touches[j].down = false;
+			}
 		}
 	}
 }
 ontouchend = e => {
 	for (let i=0; i<e.changedTouches.length; i++) {
-		if (e.changedTouches[i].identifier == Mouse.mouseTouchIdentifier) {
-			Mouse.leftclick.down = false;
-			Mouse.mouseTouchIdentifier = null;
+		for (let j=Mouse.touches.length-1; j>=0; j--) {
+			if (e.changedTouches[i].identifier == Mouse.touches[j].identifier) {
+				Mouse.touches[j].down = false;
+			}
 		}
 	}
 }

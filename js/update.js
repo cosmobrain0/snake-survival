@@ -7,7 +7,8 @@ calc = () => {
 }
 
 let movePlayer = () => {
-    if (Mouse.leftclick.down) player.direction.rotate(PLAYER_ROTATION_SPEED * deltaTime * (Mouse.leftclick.start.x <= CANVASWIDTH/2 ? -1 : 1));
+    if (keymap['a'] || Mouse.touches.filter(x => x.down && x.start.x <= CANVASWIDTH/2).length) player.direction.rotate(-PLAYER_ROTATION_SPEED * deltaTime);
+    if (keymap['d'] || Mouse.touches.filter(x => x.down && x.start.x >= CANVASWIDTH/2).length) player.direction.rotate( PLAYER_ROTATION_SPEED * deltaTime);
     for (let i=player.tail.length-1; i>0; i--) {
         player.tail[i] = player.tail[i-1].copy();
     }
@@ -68,7 +69,7 @@ let updateEnemies = () => {
 let calculateScore = () => {
     let appleMultiplier = time-timeOfLastAppleEaten < APPLE_COMBO_MAX_TIME ? APPLE_COMBO_SCORE_MULTIPLIER**appleComboChain : 1;
     score += deltaTime * TIME_SCORE_MULTIPLIER * appleMultiplier;
-    debug.renderer.text = `${floor(score)} ${appleComboChain}`;
+    debug.renderer.text = `${floor(score)}`;
     font(debug.renderer.font);
     let details = ctx.measureText(debug.renderer.text);
     debug.renderer.width = details.actualBoundingBoxLeft + details.actualBoundingBoxRight + SCORE_BOX_PADDING_X;
@@ -90,6 +91,7 @@ let updateApples = () => {
             let scoreIncrease = APPLE_SCORE_INCREASE * (APPLE_COMBO_SCORE_MULTIPLIER ** appleComboChain);
             score += scoreIncrease;
             scoreMenu.addButton(RectangleButton(scoreMenu, apples[i].x, apples[i].y, 200, 70, colourToString(COMBO_UI_SECONDARY_COLOUR), "#0000", `+${floor(scoreIncrease)}`, "#000", "50px Arial", []));
+            scoreMenu.addButton(CircleButton(scoreMenu, apples[i].x+100, apples[i].y+100, 40, colourToString(COMBO_UI_SECONDARY_COLOUR), "#0000", `x${appleComboChain}`, "#000", "50px Arial", []));
             apples[i] = newApplePosition();
         }
     }

@@ -107,14 +107,16 @@ const UI_RENDERERS = {};
 		render() {
 			let position = this.parent.globalPosition;
 			fillStyle(this.bgcolour);
-			beginPath();
-			arc(position.x, position.y, this.radius, 0, 2*PI);
+			// beginPath();
+			// arc(position.x, position.y, this.radius, 0, 2*PI);
+			circle(position, this.radius);
 			fill();
 			if (this.parent.hover) {
 				fillStyle(this.hoverbg);
-				beginPath();
-				arc(position.x, position.y, this.radius, 0, 2*PI);
-				fill();
+				// beginPath();
+				// arc(position.x, position.y, this.radius, 0, 2*PI);
+				// fill();
+				circle(position, this.radius);
 			}
 			fillStyle(this.txtcolour);
 			font(this.font);

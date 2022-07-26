@@ -33,3 +33,4 @@ changes made to engine:
     helper-functions.js - helper circle function added, helper map function added
     globals.js - numerous functions now accept vectors as arguments
     vector.js - added inBounds() and inBoundsUnordered(), as well as JSDoc comments, fixed setPolar()
+    setup.js - better mouse touch input stuffs
