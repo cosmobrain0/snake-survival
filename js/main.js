@@ -90,10 +90,19 @@ class CircleEnemy extends Enemy {
     static inactiveTime = 3000;
     static minRadius = 100;
     static maxRadius = 400;
+    static randomCircleMultiplier = 0.05;
+    static circleMinRadius = 4;
+    static circleMaxRadius = 10;
     constructor(position) {
         super(CircleEnemy.lifespan, CircleEnemy.inactiveTime);
         this.position = position.copy();
         this.radius = randomRange(CircleEnemy.minRadius, CircleEnemy.maxRadius);
+        let meanRadius = (RectangleEnemy.circleMinRadius + RectangleEnemy.circleMaxRadius)/2;
+        let numberOfRandomCircles = floor(1*CircleEnemy.randomCircleMultiplier*this.radius*this.radius / (meanRadius*meanRadius));
+        this.circlePositions = new Array(numberOfRandomCircles).fill(0).map(x => 
+            Vector.fromPolar(randomRange(0, 2*PI), randomRange(0, this.radius-CircleEnemy.circleMaxRadius)).add(this.position)
+        );
+        this.circleRadii = new Array(numberOfRandomCircles).fill(0).map(x => randomRange(CircleEnemy.circleMinRadius, CircleEnemy.circleMaxRadius));
     }
 
     draw() {
@@ -104,6 +113,11 @@ class CircleEnemy extends Enemy {
         } else {
             fillStyle("#f00");
             circle(this.position, this.radius);
+            fillStyle("#800");
+            strokeStyle("#400");
+            for (let i in this.circlePositions) {
+                circle(this.circlePositions[i], this.circleRadii[i]);
+            }
         }
     }
 
@@ -123,10 +137,21 @@ class RectangleEnemy extends Enemy {
     static inactiveTime = 3000;
     static minSize = 100;
     static maxSize = 400;
+    static randomCircleMultiplier = 0.05;
+    static circleMinRadius = 4;
+    static circleMaxRadius = 10;
     constructor(position) {
         super(RectangleEnemy.lifespan, RectangleEnemy.inactiveTime);
         this.position = position.copy();
         this.size = Vector.random(RectangleEnemy.maxSize-RectangleEnemy.minSize, RectangleEnemy.maxSize-RectangleEnemy.minSize).add(RectangleEnemy.minSize, RectangleEnemy.minSize);
+        let meanRadius = (RectangleEnemy.circleMinRadius + RectangleEnemy.circleMaxRadius)/2;
+        let numberOfRandomCircles = floor(1*RectangleEnemy.randomCircleMultiplier*this.size.x*this.size.y / (PI*meanRadius*meanRadius));
+        this.circlePositions = new Array(numberOfRandomCircles).fill(0).map(x => 
+            Vector.random(this.size.x-RectangleEnemy.circleMaxRadius*2, this.size.y-RectangleEnemy.circleMaxRadius*2)
+                .add(this.position.x+RectangleEnemy.circleMaxRadius, this.position.y+RectangleEnemy.circleMaxRadius)
+                .subtract(this.size.x/2, this.size.y/2)
+        );
+        this.circleRadii = new Array(numberOfRandomCircles).fill(0).map(x => randomRange(RectangleEnemy.circleMinRadius, RectangleEnemy.circleMaxRadius));
     }
 
     draw() {
@@ -136,11 +161,16 @@ class RectangleEnemy extends Enemy {
             let width = this.size.x * this.life/this.inactiveTime;
             let height = this.size.y * this.life/this.inactiveTime;
             ctx.fillRect(this.position.x-width/2, this.position.y-height/2, width, height);
+            ctx.strokeRect(this.position.x-this.size.x/2, this.position.y-this.size.y/2, this.size.x, this.size.y);
         } else {
             fillStyle("#f00");
             ctx.fillRect(this.position.x-this.size.x/2, this.position.y-this.size.y/2, this.size.x, this.size.y);
+            fillStyle("#800");
+            strokeStyle("#400");
+            for (let i in this.circlePositions) {
+                circle(this.circlePositions[i], this.circleRadii[i]);
+            }
         }
-        ctx.strokeRect(this.position.x-this.size.x/2, this.position.y-this.size.y/2, this.size.x, this.size.y);
     }
 
     /**
@@ -329,4 +359,5 @@ let apples;
 
 let newApplePosition = () => Vector.random(CANVASWIDTH-APPLE_SPAWN_MARGIN*2, CANVASHEIGHT-APPLE_SPAWN_MARGIN*2).add(APPLE_SPAWN_MARGIN, APPLE_SPAWN_MARGIN);
 
-const ENEMY_TYPES = [CircleEnemy, RectangleEnemy, LineEnemy, ProjectileEnemy];
+// const ENEMY_TYPES = [CircleEnemy, RectangleEnemy, LineEnemy, ProjectileEnemy];
+const ENEMY_TYPES = [CircleEnemy, RectangleEnemy];

@@ -1,4 +1,6 @@
 draw = () => {
+	fillStyle("#333");
+	fillRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
 	drawEnemies();
 	drawApples();
 	drawPlayerSnake();
@@ -49,11 +51,16 @@ let drawEnemies = () => {
 }
 
 let drawApples = () => {
-	fillStyle("#fff");
-	strokeStyle("#fff");
+	fillStyle("#fbff00");
+	strokeStyle("#000");
 	lineWidth(3);
 	for (let apple of apples) {
 		circle(apple, APPLE_RADIUS);
+		// drawImage(
+		// 	RESOURCES[3], // coin.png
+		// 	0, 0, RESOURCES[3].width, RESOURCES[3].height,
+		// 	floor(apple.x-APPLE_RADIUS), floor(apple.y-APPLE_RADIUS), 2*APPLE_RADIUS, 2*APPLE_RADIUS
+		// );
 	}
 }
 

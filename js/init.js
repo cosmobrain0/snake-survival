@@ -9,7 +9,7 @@ let comboMenu;
 /**
  * @type {String[]}
  */
-const RESOURCE_DIRS = ['img/skeleton.png', 'img/player-head.png', 'img/player-head-2.png'];
+const RESOURCE_DIRS = ['img/skeleton.png', 'img/player-head.png', 'img/player-head-2.png', 'img/coin.png'];
 /**
  * @type {HTMLImageElement[]|HTMLAudioElement[]|SVGAElement[]}
  */
