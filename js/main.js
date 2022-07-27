@@ -18,6 +18,11 @@ const PLAYER_TAIL_CUT_ANIMATION_TIME = 500;
 const PLAYER_TAIL_WAVE_AMPLITUDE = 10;
 const PLAYER_TAIL_WAVE_LENGTH = 100;
 
+/**
+ * @type {Vector[]}
+ */
+let backgroundCircles = [];
+
 let timeOfLastEnemySpawn;
 let timeOfLastAppleSpawn;
 let timeOfLastAppleEaten;
