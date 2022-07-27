@@ -13,6 +13,8 @@ const APPLE_COMBO_SCORE_MULTIPLIER = 1.5;
 const APPLE_COMBO_LENGTH_INCREASE_MULTIPLIER = 1.3;
 const COMBO_UI_COLOUR = [0, 119, 255];
 const COMBO_UI_SECONDARY_COLOUR = [0, 255, 170];
+const PLAYER_DEATH_ANIMATION_TIME = 1000;
+const PLAYER_TAIL_CUT_ANIMATION_TIME = 500;
 
 let timeOfLastEnemySpawn;
 let timeOfLastAppleSpawn;
@@ -23,6 +25,7 @@ let enemySpawnInterval;
 let colourToString = (colour, alpha) => `rgba(${colour[0]}, ${colour[1]}, ${colour[2]}, ${typeof alpha == 'number' ? alpha : 1})`;
 
 class Snake {
+    #dead;
     static startingLength = 80;
     static speed = 0.5;
     static headRadius = 40;
@@ -37,6 +40,34 @@ class Snake {
         this.direction = Vector.fromPolar(-PI/180 * 45, 1);
         this.tail = new Array(Snake.startingLength).fill(0).map((x, i) => Vector.fromPolar(PI/180 * 135, Snake.speed*20*(i+1)).add(position));
         this.timeOfLastTailShrink = time;
+
+        this.#dead = false;
+        this.timeOfDeath = null;
+
+        this.tailLengthAtPreviousCut = null;
+        this.targetTailLengthAfterCut = null;
+        this.timeOfTailLengthCut = null;
+    }
+
+    get dead() { return this.#dead; }
+    set dead(v) {
+        this.#dead = v;
+        if (this.dead) {
+            this.timeOfDeath = time;
+            this.cutTailToLength(0);
+        }
+    }
+
+    /**
+     * 
+     * @param {Number} l the new length of the tail
+     */
+    cutTailToLength(l) {
+        if (l < this.targetTailLengthAfterCut || this.targetTailLengthAfterCut == null) {
+            this.tailLengthAtPreviousCut = this.tail.length;
+            this.targetTailLengthAfterCut = l;
+            this.timeOfTailLengthCut = time;
+        }
     }
 }
 

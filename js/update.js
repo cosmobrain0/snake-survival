@@ -1,9 +1,36 @@
 calc = () => {
-    movePlayer();
-    updateEnemies();
-    updateApples();
-    checkGameOver();
-    calculateScore();
+    if (!player.dead) {
+        movePlayer();
+        updateEnemies();
+        updateApples();
+        checkGameOver();
+        calculateScore();
+    } else {
+        let playerDeathAnimationProgress = (time-player.timeOfDeath)/(PLAYER_DEATH_ANIMATION_TIME);
+        if (playerDeathAnimationProgress < 0.5) {
+            for (let i=0; i<5; i++) {
+                PARTICLES.push(new Particle(player.position.copy(), Vector.fromPolar(random()*2*PI, 0.2), 500, 20, ["#fff", "#fbff00", "#f00"][floor(random()*3)]));
+            }
+            // player.tail = player.tail.slice(0, floor(2*(0.5-playerDeathAnimationProgress)*player.tailLengthAtDeath));
+            // for (let position of player.tail) {
+            //     if (random() < 0.08)
+            //         PARTICLES.push(new Particle(position.copy(), Vector.fromPolar(random()*2*PI, 0.2), 500, 10, "#fff"));
+            // }
+        }
+        if (playerDeathAnimationProgress >= 1) {
+            paused = true;
+            Rune.gameOver();
+        }
+    }
+    let tailLengthAnimationProgress = (time-player.timeOfTailLengthCut)/PLAYER_TAIL_CUT_ANIMATION_TIME;
+    if (inRange(tailLengthAnimationProgress, 0, 1) && player.timeOfTailLengthCut != null) {
+        // console.log(time-player.timeOfTailLengthCut);
+        player.tail = player.tail.slice(0, floor(map(tailLengthAnimationProgress, 0, 1, player.tailLengthAtPreviousCut, player.targetTailLengthAfterCut)));
+        for (let i=player.targetTailLengthAfterCut; i<player.tail.length; i++) {
+            if (random() < 0.08)
+                PARTICLES.push(new Particle(player.tail[i].copy(), Vector.fromPolar(random()*2*PI, 0.2), 500, 10, "#fff"));
+        }
+    }
     manageParticles();
 }
 
@@ -25,33 +52,30 @@ let movePlayer = () => {
 
 let checkGameOver = () => {
     if (player.tail.length <= Snake.closestToIgnore) {
-        paused = true;
-        Rune.gameOver();
+        player.dead = true;
         return;
     }
-    for (let i=player.tail.length-1; i>=Snake.closestToIgnore; i--) {
+    for (let i=Snake.closestToIgnore; i<player.tail.length; i++) {
         if (player.position.to(player.tail[i]).sqrLength() < Snake.headRadius*Snake.headRadius) {
-            paused = true;
-            Rune.gameOver();
+            player.dead = true;
             return;
         }
         for (let enemy of enemies) {
             if (enemy.active && enemy.sqrDistanceToPoint(player.tail[i]) <= 5*5) {
-                player.tail.splice(i);
+                // player.tail.splice(i);
+                player.cutTailToLength(i);
                 break;
             }
         }
     }
     for (let enemy of enemies) {
         if (enemy.active && enemy.sqrDistanceToPoint(player.position) < Snake.headRadius*Snake.headRadius) {
-            paused = true;
-            Rune.gameOver();
+            player.dead = true;
             return;
         }
     }
     if (!Vector.inBounds(player.position, new Vector(0, 0), new Vector(CANVASWIDTH, CANVASHEIGHT))) {
-        paused = true;
-        Rune.gameOver();
+        player.dead = true;
         return;
     }
 }
