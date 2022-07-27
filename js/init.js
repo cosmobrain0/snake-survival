@@ -46,6 +46,8 @@ init = () => {
         // let spacing = new Vector(CANVASWIDTH/10, CANVASHEIGHT/10);
         return new Vector((i%10) * CANVASWIDTH/10, floor(i/10)*CANVASHEIGHT/10)
     }), 100);
+    let indeces = ENEMY_TYPE_INDECES[Rune.getChallengeNumber()%ENEMY_TYPE_INDECES.length];
+    ENEMY_TYPES = indeces.map(x => ALL_ENEMY_TYPES[x]);
 }
 
 restartGame = () => {
