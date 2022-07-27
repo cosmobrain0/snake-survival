@@ -43,7 +43,8 @@ init = () => {
         }
     }, 1000/60);
     setTimeout(() => backgroundCircles = new Array(100).fill(0).map((x, i) => {
-        return new Vector(i%10 * CANVASHEIGHT/10, floor(i/10)*CANVASHEIGHT/10)
+        // let spacing = new Vector(CANVASWIDTH/10, CANVASHEIGHT/10);
+        return new Vector((i%10) * CANVASWIDTH/10, floor(i/10)*CANVASHEIGHT/10)
     }), 100);
 }
 

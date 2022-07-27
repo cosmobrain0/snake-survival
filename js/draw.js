@@ -11,10 +11,10 @@ draw = () => {
 let drawBackground = () => {
 	fillStyle("#333");
 	fillRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
-	strokeStyle("#222");
+	fillStyle("#222");
 	lineWidth(5);
 	for (let i in backgroundCircles) {
-		circle(backgroundCircles[i], 15, 0, 1, false, false, true);
+		circle(backgroundCircles[i], 15, 0, 1, false, true, false);
 		backgroundCircles[i].add(-0.5, 0.5);
 		if (backgroundCircles[i].x < -15) backgroundCircles[i].x += CANVASWIDTH + 30;
 		if (backgroundCircles[i].y > CANVASHEIGHT+15) backgroundCircles[i].y -= CANVASHEIGHT+30;
