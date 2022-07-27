@@ -96,7 +96,7 @@ let drawSnakeSkeleton = (p1, p2) => {
 let drawSnakeHead = () => {
 	let angle = clamp(map(apples.reduce((acc, val) => min(acc, player.position.to(val).length()), Infinity), 0, 200, 0.15, 0), 0, 0.15);
 	save();
-	translate(Vector.subtract(player.position, new Vector(Snake.headRadius, 0)));
+	translate(Vector.subtract(player.position, new Vector(Snake.headRadius, 0)).add(playerOffset().multiply(0.5)));
 	rotate(player.direction.theta()/(2*PI));
 	let imageSizeMultiplier = 1;
 	// save();

@@ -34,13 +34,17 @@ calc = () => {
     manageParticles();
 }
 
+let playerOffset = () => {
+    return player.direction.copy().rotate(PI/2).multiply(PLAYER_TAIL_WAVE_AMPLITUDE*sin(time/PLAYER_TAIL_WAVE_LENGTH));
+}
+
 let movePlayer = () => {
     if (keymap['a'] || (Mouse.leftclick.down && Mouse.leftclick.start.x <= CANVASWIDTH/2) || Mouse.touches.filter(x => x.down && x.start.x <= CANVASWIDTH/2).length) player.direction.rotate(-PLAYER_ROTATION_SPEED * deltaTime);
     if (keymap['d'] || (Mouse.leftclick.down && Mouse.leftclick.start.x > CANVASWIDTH/2) || Mouse.touches.filter(x => x.down && x.start.x > CANVASWIDTH/2).length) player.direction.rotate( PLAYER_ROTATION_SPEED * deltaTime);
     for (let i=player.tail.length-1; i>0; i--) {
         player.tail[i] = player.tail[i-1].copy();
     }
-    player.tail[0] = player.position.copy();
+    player.tail[0] = player.position.copy().add(playerOffset());
     player.position.add(Vector.multiply(player.direction, Snake.speed*deltaTime));
     if (time-player.timeOfLastTailShrink > TAIL_SHRINK_INTERVAL) {
         player.timeOfLastTailShrink = time;
