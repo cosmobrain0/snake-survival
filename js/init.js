@@ -17,7 +17,7 @@ const RESOURCES = [];
 const RESOURCE_LOAD_STATES = [];
 let LOAD_RESOURCES_INTERVAL = null;
 init = () => {
-    debug = RectangleButton(UI, 40, 40, 100, 50, "#f00", "#0000", "DEBUG", "#fff", "50px Arial", []);
+    debug = RectangleButton(UI, 40, 40, 100, 50, "#f00", "#0000", "0", "#fff", "50px Arial", []);
     scoreMenu = new Menu(new Vector(0, 0), UI);
     restartGame();
     paused = true;

@@ -129,5 +129,15 @@ let drawSnakeHead = () => {
 }
 
 let drawParticles = () => {
-	for (let particle of PARTICLES) particle.draw();
+	// for (let particle of PARTICLES) particle.draw();
+	const PARTICLE_COLOURS = ["#fff", "#fbff00", "#f00", "#8669"];
+	for (let colour of PARTICLE_COLOURS) {
+		ctx.fillStyle = colour;
+		ctx.beginPath();
+		for (let particle of PARTICLES.filter(x => x.colour == colour)) {
+			ctx.moveTo(particle.position.x, particle.position.y);
+			ctx.arc(particle.position.x, particle.position.y, particle.radius, 0, 2*PI);
+		}
+		ctx.fill();
+	}
 }

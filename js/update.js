@@ -8,7 +8,7 @@ calc = () => {
     } else {
         let playerDeathAnimationProgress = (time-player.timeOfDeath)/(PLAYER_DEATH_ANIMATION_TIME);
         if (playerDeathAnimationProgress < 0.5) {
-            for (let i=0; i<5; i++) {
+            for (let i=0; i<3; i++) {
                 PARTICLES.push(new Particle(player.position.copy(), Vector.fromPolar(random()*2*PI, 0.2), 500, 20, ["#fff", "#fbff00", "#f00"][floor(random()*3)]));
             }
             // player.tail = player.tail.slice(0, floor(2*(0.5-playerDeathAnimationProgress)*player.tailLengthAtDeath));
@@ -27,7 +27,7 @@ calc = () => {
         // console.log(time-player.timeOfTailLengthCut);
         player.tail = player.tail.slice(0, floor(map(tailLengthAnimationProgress, 0, 1, player.tailLengthAtPreviousCut, player.targetTailLengthAfterCut)));
         for (let i=player.targetTailLengthAfterCut; i<player.tail.length; i++) {
-            if (random() < 0.08)
+            if (random() < 0.05)
                 PARTICLES.push(new Particle(player.tail[i].copy(), Vector.fromPolar(random()*2*PI, 0.2), 500, 10, "#fff"));
         }
     }
@@ -51,7 +51,9 @@ let movePlayer = () => {
         player.tail.splice(player.tail.length-1);
     }
 
-    PARTICLES.push(new Particle(player.tail[player.tail.length-1].copy(), Vector.fromPolar(randomRange(0, 2*PI), 0.1), 500, 10, "#fff"))
+    if (random() < 0.8) {
+        PARTICLES.push(new Particle(player.tail[player.tail.length-1].copy(), Vector.fromPolar(randomRange(0, 2*PI), 0.1), 500, 10, "#fff"))
+    }
 }
 
 let checkGameOver = () => {
@@ -86,7 +88,7 @@ let checkGameOver = () => {
 
 let updateEnemies = () => {
     for (let i=enemies.length-1; i>=0; i--) {
-        if (random() < 0.4) enemies[i].spawnParticles();
+        if (random() < 0.3) enemies[i].spawnParticles();
         if (enemies[i].dead) enemies.splice(i, 1);
     }
 
@@ -96,7 +98,7 @@ let updateEnemies = () => {
         timeOfLastEnemySpawn = time;
         enemySpawnInterval *= 0.99;
     }
-    if (random() < 0.8) {
+    if (random() < 0.5) {
         PARTICLES.push(new Particle(randomPointInRectangle(0, 0, CANVASWIDTH, CANVASHEIGHT), Vector.fromPolar(random()*2*PI, 0.1), 1000, 15, "#f00"));
     }
 }
@@ -112,7 +114,7 @@ let calculateScore = () => {
 
 let updateApples = () => {
     for (let i=apples.length-1; i>=0; i--) {
-        if (random() < 0.3) {
+        if (random() < 0.2) {
             PARTICLES.push(new Particle(apples[i].copy(), Vector.fromPolar(randomRange(0, 2*PI), 0.1), 1000, 15, "#fbff00"))
         }
         if (apples[i].to(player.position).sqrLength() < (Snake.headRadius + APPLE_RADIUS)*(Snake.headRadius + APPLE_RADIUS)) {
@@ -130,7 +132,7 @@ let updateApples = () => {
             score += scoreIncrease;
             scoreMenu.addButton(RectangleButton(scoreMenu, apples[i].x, apples[i].y, 200, 70, colourToString(COMBO_UI_SECONDARY_COLOUR), "#0000", `+${floor(scoreIncrease)}`, "#000", "50px Arial", []));
             scoreMenu.addButton(CircleButton(scoreMenu, apples[i].x+100, apples[i].y+100, 40, colourToString(COMBO_UI_SECONDARY_COLOUR), "#0000", `x${appleComboChain}`, "#000", "50px Arial", []));
-            for (let j=0; j<20; j++) {
+            for (let j=0; j<15; j++) {
                 PARTICLES.push(new Particle(apples[i].copy(), Vector.fromPolar(randomRange(0, 2*PI), 0.1), 1000, 15, "#fff"))
             }
             apples[i] = newApplePosition();
