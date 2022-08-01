@@ -14,6 +14,18 @@ ctx.font = "40px Arial";
 document.body.appendChild(c);
 ctx.imageSmoothingEnabled = false;
 
+// disabling selection js is from https://stackoverflow.com/questions/2310734/how-to-make-html-text-unselectable
+function disableSelection(element) {
+	if (typeof element.onselectstart != 'undefined') {
+		element.onselectstart = function() { return false; };
+	} else if (typeof element.style.MozUserSelect != 'undefined') {
+		element.style.MozUserSelect = 'none';
+	} else {
+		element.onmousedown = function() { return false; };
+	}
+}
+disableSelection(c);
+
 /**
  * @typedef {Object} MouseButton
  * @property {boolean} down true while this button is pressed
