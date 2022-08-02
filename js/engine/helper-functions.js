@@ -21,7 +21,6 @@ let adjustMousePosition = (x, y) => {
     let position = new Vector(x - (window.innerWidth - c.width) / 2, y - (window.innerHeight - c.height) / 2);
     position.x /= c.width / CANVASWIDTH;
     position.y /= c.height / CANVASHEIGHT;
-    // position.calculatePolar();
     return position;
 }
 

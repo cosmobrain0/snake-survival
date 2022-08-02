@@ -17,6 +17,7 @@ const PLAYER_DEATH_ANIMATION_TIME = 1000;
 const PLAYER_TAIL_CUT_ANIMATION_TIME = 500;
 const PLAYER_TAIL_WAVE_AMPLITUDE = 10;
 const PLAYER_TAIL_WAVE_LENGTH = 100;
+const TUTORIAL_DURATION = 3000;
 
 /**
  * @type {Vector[]}
@@ -70,7 +71,7 @@ class Snake {
      * @param {Number} l the new length of the tail
      */
     cutTailToLength(l) {
-        if (l < this.targetTailLengthAfterCut || this.targetTailLengthAfterCut == null) {
+        if (this.targetTailLengthAfterCut == null || l < this.targetTailLengthAfterCut) {
             this.tailLengthAtPreviousCut = this.tail.length;
             this.targetTailLengthAfterCut = l;
             this.timeOfTailLengthCut = time;

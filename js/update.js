@@ -23,12 +23,15 @@ calc = () => {
         }
     }
     let tailLengthAnimationProgress = (time-player.timeOfTailLengthCut)/PLAYER_TAIL_CUT_ANIMATION_TIME;
-    if (inRange(tailLengthAnimationProgress, 0, 1) && player.timeOfTailLengthCut != null) {
-        // console.log(time-player.timeOfTailLengthCut);
+    if (player.timeOfTailLengthCut != null && inRange(tailLengthAnimationProgress, 0, 1)) {
         player.tail = player.tail.slice(0, floor(map(tailLengthAnimationProgress, 0, 1, player.tailLengthAtPreviousCut, player.targetTailLengthAfterCut)));
         for (let i=player.targetTailLengthAfterCut; i<player.tail.length; i++) {
             if (random() < 0.05)
                 PARTICLES.push(new Particle(player.tail[i].copy(), Vector.fromPolar(random()*2*PI, 0.2), 500, 10, "#fff"));
+        }
+    } else {
+        if (player.targetTailLengthAfterCut != null && player.targetTailLengthAfterCut < player.tail.length) {
+            player.tail.splice(player.targetTailLengthAfterCut, player.tail.length-player.targetTailLengthAfterCut);
         }
     }
     manageParticles();
@@ -67,8 +70,7 @@ let checkGameOver = () => {
             return;
         }
         for (let enemy of enemies) {
-            if (enemy.active && enemy.sqrDistanceToPoint(player.tail[i]) <= 5*5) {
-                // player.tail.splice(i);
+            if (enemy.active && enemy.sqrDistanceToPoint(player.tail[i]) <= 10*10) {
                 player.cutTailToLength(i);
                 break;
             }
@@ -121,10 +123,15 @@ let updateApples = () => {
             appleComboChain++;
             let playerTailOffset = player.tail[player.tail.length-2].to(player.tail[player.tail.length-1]);
             let previousPoint = player.tail[player.tail.length-1];
-            for (let j=0; j<APPLE_LENGTH_INCREASE * (APPLE_COMBO_LENGTH_INCREASE_MULTIPLIER ** appleComboChain); j++) {
+            let lengthIncrease = APPLE_LENGTH_INCREASE * (APPLE_COMBO_LENGTH_INCREASE_MULTIPLIER ** appleComboChain);
+            for (let j=0; j<lengthIncrease; j++) {
                 let newPoint = Vector.add(previousPoint, playerTailOffset.copy().rotate(PLAYER_ROTATION_SPEED*deltaTime*j));
                 player.tail.push(newPoint.copy());
                 previousPoint = newPoint.copy();
+            }
+            if (player.targetTailLengthAfterCut) {
+                player.tailLengthAtPreviousCut += lengthIncrease;
+                player.targetTailLengthAfterCut += lengthIncrease;
             }
             timeOfLastAppleEaten = time;
             timeOfLastAppleSpawn = time;

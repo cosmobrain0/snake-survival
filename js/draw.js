@@ -6,6 +6,53 @@ draw = () => {
 	drawTouchControls();
 	drawScore();
 	drawParticles();
+	if (time < TUTORIAL_DURATION) {
+		if (time == 0) return;
+		let progress = time / TUTORIAL_DURATION;
+		// draw tutorial
+		ctx.globalAlpha = 0.8;
+		if (progress < 0.5) {
+			ctx.fillStyle = `rgba(0, 153, 204, ${sin(progress*PI*2)})`;
+			ctx.fillRect(0, 0, CANVASWIDTH/2, CANVASHEIGHT);
+			ctx.strokeStyle = "#fff";
+			ctx.lineWidth = 5;
+
+			ctx.save();
+			ctx.translate(CANVASWIDTH/4, CANVASHEIGHT/4);
+			ctx.rotate(map(sin(progress*PI*2), 0, 1, 0, -PI/2));
+
+			ctx.beginPath();
+			ctx.arc(0, 0, 60, PI, -PI/2, true);
+			ctx.moveTo(-20, -60);
+			ctx.lineTo(0, -80);
+			ctx.moveTo(-20, -60);
+			ctx.lineTo(0, -40);
+			ctx.stroke();
+
+			ctx.restore();
+		} else {
+			ctx.fillStyle = `rgba(0, 153, 204, ${sin((progress-0.5)*PI*2)})`;
+			ctx.fillRect(CANVASWIDTH/2, 0, CANVASWIDTH/2, CANVASHEIGHT);
+			ctx.strokeStyle = "#fff";
+			ctx.lineWidth = 5;
+
+			ctx.save();
+			ctx.translate(CANVASWIDTH/4 * 3, CANVASHEIGHT/4);
+			ctx.rotate(map(sin(progress*PI*2), 0, 1, 0, -PI/2));
+
+			ctx.beginPath();
+			ctx.arc(0, 0, 60, -2*PI, -PI/2, false);
+			ctx.moveTo(20, -60);
+			ctx.lineTo(0, -80);
+			ctx.moveTo(20, -60);
+			ctx.lineTo(0, -40);
+			ctx.stroke();
+
+			ctx.restore();
+		}
+
+		ctx.globalAlpha = 1;
+	}
 }
 
 let drawBackground = () => {
@@ -46,8 +93,6 @@ let drawPlayerSnake = () => {
 		}
 		stroke();
 		for (let i=0; i<player.tail.length-1; i+=4) {
-			// lineTo(player.tail[i]);
-			// console.log(i, player.tail.length);
 			drawSnakeSkeleton(player.tail[i], Vector.add(
 				player.tail[i], Vector.subtract(player.tail[i+1], player.tail[i]).multiply(4)
 			));
